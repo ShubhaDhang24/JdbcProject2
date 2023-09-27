@@ -158,8 +158,6 @@ public class Todo_Item implements TodoItems {
                 int id = resultSet.getInt("id");
                 String description = resultSet.getString("description");
                 boolean done = resultSet.getBoolean("done");
-
-                // Create a Todo_Item object with the retrieved data
                 Todo_Item todoItem = new Todo_Item(id,title,description,deadline, done,assignee_id);
                 todoItems.add(todoItem);
             }
@@ -167,11 +165,7 @@ public class Todo_Item implements TodoItems {
         catch (SQLException s){
             System.out.println(s.getStackTrace());
         }
-
-
-
-
-        return null;
+        return todoItems;
     }
 
     @Override
