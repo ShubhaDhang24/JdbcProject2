@@ -2,9 +2,12 @@ package model;
 
 import Data.People;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Person implements People {
+    private Collection<Person> person;
     private int person_id;
     private String firstName;
     private String lastName;
@@ -43,36 +46,48 @@ public class Person implements People {
 
     @Override
     public Person create(Person person) {
-        return person;
+        Person person1=new Person(person_id,firstName,lastName);
+        return person1;
     }
 
     @Override
     public Collection<Person> findAll() {
-
-        return null;
+        return new ArrayList<>(person);
     }
 
     @Override
     public Person findById(int id) {
+        for (Person p:person) {
+            if(p.person_id==id)
+                return p;
+        }
         return null;
     }
 
     @Override
     public Collection<Person> findByName(String name) {
-        if(this.getFirstName().equalsIgnoreCase(name))
-        {
+        List<Person> newArray=new ArrayList<>();
+        for (Person p:person) {
+            if(p.getFirstName().contains(name))
+                newArray.add(p);
         }
-        return null;
-
+        return newArray;
     }
 
     @Override
     public Person update(Person person) {
+
+
         return null;
     }
 
     @Override
     public boolean deleteById(int id) {
+        for (Person p:person) {
+            if(p.person_id==id)
+                person.remove(p);
+            return true;
+        }
         return false;
     }
 }
