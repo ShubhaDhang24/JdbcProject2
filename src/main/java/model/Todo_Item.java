@@ -1,9 +1,13 @@
 package model;
 
 import Data.TodoItems;
+import com.shubha.database.MySql;
 
+import java.sql.Connection;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class Todo_Item implements TodoItems {
     private int todo_id;
@@ -73,6 +77,8 @@ public class Todo_Item implements TodoItems {
 
     @Override
     public Collection<Todo_Item> findAll() {
+        List<Todo_Item> items=new ArrayList<>();
+
         return null;
     }
 
