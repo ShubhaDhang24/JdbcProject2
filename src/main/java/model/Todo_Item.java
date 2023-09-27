@@ -4,6 +4,9 @@ import Data.TodoItems;
 import com.shubha.database.MySql;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,7 +16,7 @@ public class Todo_Item implements TodoItems {
     private int todo_id;
     private String title;
     private String description;
-    LocalDate deadline ;
+    LocalDate deadline;
     private boolean done;
     private int assignee_id;
 
@@ -77,9 +80,30 @@ public class Todo_Item implements TodoItems {
 
     @Override
     public Collection<Todo_Item> findAll() {
-        List<Todo_Item> items=new ArrayList<>();
 
-        return null;
+        List<Todo_Item> items = new ArrayList<>();
+
+        try (Connection connection = MySql.getConnection();
+
+             Statement statement = connection.createStatement();) {
+
+            ResultSet resultSet = statement.executeQuery("Select * from Todo_item");
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String title = resultSet.getString(2);
+                String description = resultSet.getString(3);
+                LocalDate date = resultSet.getDate(4).toLocalDate();
+                boolean done = resultSet.getBoolean(5);
+                int assignId = resultSet.getInt(6);
+                Todo_Item item = new Todo_Item(id, title, description, date, done, assignId);
+                items.add(item);
+
+            }
+        } catch (SQLException s) {
+            System.out.println(s.getStackTrace());
+        }
+
+        return items;
     }
 
     @Override
