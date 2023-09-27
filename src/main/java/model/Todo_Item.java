@@ -115,18 +115,26 @@ public class Todo_Item implements TodoItems {
                     int assignId = resultSet.getInt(6);
                     Todo_Item item1 = new Todo_Item(id, title, description, date, done, assignId);
                     items.add(item1);
-
                 }
             } catch (SQLException s) {
                 System.out.println(s.getStackTrace());
             }
-
             return items;
         }
 
 
     @Override
     public Todo_Item findById(int id) {
+        String sqlQuery="Select * from Todo_Item where todo_id=?";
+        try (Connection connection = MySql.getConnection();
+             PreparedStatement statement  = connection.prepareStatement(sqlQuery)) {
+            statement.setInt(1,2);
+            ResultSet resultSet=statement.executeQuery(sqlQuery);
+        }
+        catch (SQLException s)
+        {
+            System.out.println(s.getStackTrace());
+        }
         return null;
     }
 
