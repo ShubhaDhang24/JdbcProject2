@@ -59,7 +59,11 @@ public class Person implements People {
 
     @Override
     public Collection<Person> findByName(String name) {
+        if(this.getFirstName().equalsIgnoreCase(name))
+        {
+        }
         return null;
+
     }
 
     @Override
