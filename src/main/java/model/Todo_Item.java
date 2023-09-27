@@ -89,57 +89,88 @@ public class Todo_Item implements TodoItems {
             if (rowsInserted > 0) {
                 System.out.println("A new record was inserted successfully.");
             }
-
         } catch (SQLException e) {
             System.out.println(e.getStackTrace());
-
         }
         return item;
     }
 
-        @Override
-        public Collection<Todo_Item> findAll () {
-
-            List<Todo_Item> items = new ArrayList<>();
-            try (Connection connection = MySql.getConnection();
-
-                 Statement statement = connection.createStatement();) {
-
-                ResultSet resultSet = statement.executeQuery("Select * from Todo_item");
-                while (resultSet.next()) {
-                    int id = resultSet.getInt(1);
-                    String title = resultSet.getString(2);
-                    String description = resultSet.getString(3);
-                    LocalDate date = resultSet.getDate(4).toLocalDate();
-                    boolean done = resultSet.getBoolean(5);
-                    int assignId = resultSet.getInt(6);
-                    Todo_Item item1 = new Todo_Item(id, title, description, date, done, assignId);
-                    items.add(item1);
-                }
-            } catch (SQLException s) {
-                System.out.println(s.getStackTrace());
-            }
-            return items;
-        }
-
-
     @Override
-    public Todo_Item findById(int id) {
-        String sqlQuery="Select * from Todo_Item where todo_id=?";
+    public Collection<Todo_Item> findAll() {
+
+        List<Todo_Item> items = new ArrayList<>();
         try (Connection connection = MySql.getConnection();
-             PreparedStatement statement  = connection.prepareStatement(sqlQuery)) {
-            statement.setInt(1,2);
-            ResultSet resultSet=statement.executeQuery(sqlQuery);
-        }
-        catch (SQLException s)
-        {
+
+             Statement statement = connection.createStatement();) {
+
+            ResultSet resultSet = statement.executeQuery("Select * from Todo_item");
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String title = resultSet.getString(2);
+                String description = resultSet.getString(3);
+                LocalDate date = resultSet.getDate(4).toLocalDate();
+                boolean done = resultSet.getBoolean(5);
+                int assignId = resultSet.getInt(6);
+                Todo_Item item1 = new Todo_Item(id, title, description, date, done, assignId);
+                items.add(item1);
+            }
+        } catch (SQLException s) {
             System.out.println(s.getStackTrace());
         }
-        return null;
+        return items;
     }
 
     @Override
-    public Collection<Todo_Item> findByDoneStatus(boolean val) {
+    public Todo_Item findById(int id) {
+        Todo_Item item = null;
+        String sqlQuery = "Select * from Todo_Item where todo_id=?";
+        try (Connection connection = MySql.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sqlQuery)) {
+            statement.setInt(1, 2);
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+
+            if (resultSet.next()) {
+                int todoId = resultSet.getInt(todo_id);
+                String title = resultSet.getString(2);
+                String description = resultSet.getString(3);
+                LocalDate date = resultSet.getDate(4).toLocalDate();
+                boolean done = resultSet.getBoolean(5);
+                int assignId = resultSet.getInt(6);
+                item = new Todo_Item(todoId, title, description, date, done, assignId);
+            }
+        } catch (SQLException s) {
+            System.out.println(s.getStackTrace());
+        }
+        return item;
+    }
+
+    @Override
+    public Collection<Todo_Item> findByDoneStatus(boolean val)
+    {
+        List<Todo_Item> todoItems=new ArrayList<>();
+        String sql = "SELECT id, description, done FROM todo_items WHERE done = ?";
+        try{
+            Connection connection=MySql.getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        preparedStatement.setBoolean(1, val);
+        ResultSet resultSet=preparedStatement.executeQuery(sql);
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String description = resultSet.getString("description");
+                boolean done = resultSet.getBoolean("done");
+
+                // Create a Todo_Item object with the retrieved data
+                Todo_Item todoItem = new Todo_Item(id,title,description,deadline, done,assignee_id);
+                todoItems.add(todoItem);
+            }
+        }
+        catch (SQLException s){
+            System.out.println(s.getStackTrace());
+        }
+
+
+
+
         return null;
     }
 
