@@ -1,7 +1,9 @@
 package model;
 
 import Data.People;
+import com.shubha.database.MySql;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,13 +48,49 @@ public class Person implements People {
 
     @Override
     public Person create(Person person) {
-        Person person1=new Person(person_id,firstName,lastName);
-        return person1;
+        String sql = "INSERT INTO persons (first_Name,last_Name ) VALUES (?, ?)";
+        Connection connection = MySql.getConnection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1, person.getPerson_id());
+            preparedStatement.setString(2, person.getFirstName());
+            preparedStatement.setString(3, person.getLastName());
+            int rowInserted = preparedStatement.executeUpdate();
+            if (rowInserted > 0) {
+                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    int generatedId = generatedKeys.getInt(1);
+
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return person;
     }
 
     @Override
     public Collection<Person> findAll() {
-        return new ArrayList<>(person);
+        List<Person> allPerson=new ArrayList<>();
+        String sql="Select * from Person";
+        Connection connection=MySql.getConnection();
+        try{
+            PreparedStatement preparedStatement=connection.prepareStatement(sql);
+            ResultSet resultSet= preparedStatement.executeQuery();
+            while (resultSet.next())
+            {
+                int id=resultSet.getInt(1);
+                String name= resultSet.getString(2);
+                String lName=resultSet.getString(3);
+                Person person1=new Person(id,name,lName);
+                allPerson.add(person1);
+            }
+        }
+        catch (SQLException s)
+        {
+            System.out.println("Data Base not found exception");
+        }
+        return allPerson;
     }
 
     @Override
