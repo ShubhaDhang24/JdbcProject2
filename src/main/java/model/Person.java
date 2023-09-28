@@ -14,7 +14,7 @@ public class Person implements People {
     private String firstName;
     private String lastName;
 
-    public Person( String firstName, String lastName) {
+    public Person(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -71,23 +71,20 @@ public class Person implements People {
 
     @Override
     public Collection<Person> findAll() {
-        List<Person> allPerson=new ArrayList<>();
-        String sql="Select * from Person";
-        Connection connection=MySql.getConnection();
-        try{
-            PreparedStatement preparedStatement=connection.prepareStatement(sql);
-            ResultSet resultSet= preparedStatement.executeQuery();
-            while (resultSet.next())
-            {
-                int id=resultSet.getInt(1);
-                String name= resultSet.getString(2);
-                String lName=resultSet.getString(3);
-                Person person1=new Person(id,name,lName);
+        List<Person> allPerson = new ArrayList<>();
+        String sql = "Select * from Person";
+        Connection connection = MySql.getConnection();
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                String lName = resultSet.getString(3);
+                Person person1 = new Person(id, name, lName);
                 allPerson.add(person1);
             }
-        }
-        catch (SQLException s)
-        {
+        } catch (SQLException s) {
             System.out.println("Data Base not found exception");
         }
         return allPerson;
@@ -95,21 +92,48 @@ public class Person implements People {
 
     @Override
     public Person findById(int id) {
-        for (Person p:person) {
-            if(p.person_id==id)
-                return p;
+        String sql = "Select * from Person Where person_id=?";
+        Person p1 = null;
+        Connection connection = MySql.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql, id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int personId = resultSet.getInt(1);
+                String name = resultSet.getString(2);
+                String lName = resultSet.getString(3);
+                p1 = new Person(personId, name, lName);
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getStackTrace());
         }
-        return null;
+        return p1;
     }
 
     @Override
     public Collection<Person> findByName(String name) {
-        List<Person> newArray=new ArrayList<>();
-        for (Person p:person) {
-            if(p.getFirstName().contains(name))
-                newArray.add(p);
+        String sql = "Select name from Person Where first_Name=?";
+        List<Person> personName = new ArrayList<>();
+        Connection connection = MySql.getConnection();
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = null;
+            resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt(person_id);
+                String firstnames = resultSet.getString(firstName);
+                String lastnames = resultSet.getString(lastName);
+                Person person1 = new Person(id, firstnames, lastnames);
+                personName.add(person1);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getStackTrace());
+            ;
         }
-        return newArray;
+        return personName;
     }
 
     @Override
@@ -121,8 +145,8 @@ public class Person implements People {
 
     @Override
     public boolean deleteById(int id) {
-        for (Person p:person) {
-            if(p.person_id==id)
+        for (Person p : person) {
+            if (p.person_id == id)
                 person.remove(p);
             return true;
         }
