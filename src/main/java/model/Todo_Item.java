@@ -206,22 +206,45 @@ public class Todo_Item implements TodoItems {
                 boolean done = resultSet.getBoolean("done");
                 Todo_Item todoItem = new Todo_Item(id, title, description, deadline, done, assignee_id);
                 todoItems.add(todoItem);
-
             }
         } catch (SQLException e) {
             System.out.println("Database does not exist");
-            ;
         }
         return todoItems;
     }
 
     @Override
     public Todo_Item update(Todo_Item item) {
-        return null;
+        String sql = "UPDATE Todo_Item SET title=?, description=?, done=? FROM todo_items WHERE id=?";
+        Connection connection = MySql.getConnection();
+        int updateRow;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(2, item.getTitle());
+            preparedStatement.setString(3, item.getDescription());
+            preparedStatement.setBoolean(4, item.getDone());
+            updateRow = preparedStatement.executeUpdate();
+            if (updateRow > 0)
+                System.out.println("Update was Success full");
+        } catch (SQLException e) {
+            System.out.println("Data base does not exist");;
+        }
+        return item;
     }
 
     @Override
     public boolean deleteById(int delId) {
+        String sql="Delete from Todo_Item where id=?";
+        Connection connection=MySql.getConnection();
+        try {
+            PreparedStatement statement=connection.prepareStatement(sql);
+            statement.setInt(1,delId);
+            int rowDeleted=statement.executeUpdate();
+            return rowDeleted>0;
+
+        } catch (SQLException e) {
+            System.out.println("Data Base does not exist");
+        }
         return false;
     }
 }
