@@ -195,7 +195,26 @@ public class Todo_Item implements TodoItems {
 
     @Override
     public Collection<Todo_Item> findByUnassignedTodoItems() {
-        return null;
+
+        String sql = "SELECT id, description, done FROM todo_items WHERE assignee_id is NULL";
+        List<Todo_Item> todoItems=new ArrayList<>();
+        Connection connection=MySql.getConnection();
+        try {
+            PreparedStatement statement= connection.prepareStatement("sql");
+            ResultSet resultSet= statement.executeQuery();
+            while (resultSet.next())
+            {
+                int id = resultSet.getInt("id");
+                String description = resultSet.getString("description");
+                boolean done = resultSet.getBoolean("done");
+                Todo_Item todoItem = new Todo_Item(id,title,description,deadline, done,assignee_id);
+                todoItems.add(todoItem);
+
+            }
+        } catch (SQLException e) {
+            System.out.println("Database does not exist");;
+        }
+        return todoItems;
     }
 
     @Override
