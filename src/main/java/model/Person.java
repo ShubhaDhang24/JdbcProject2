@@ -138,18 +138,37 @@ public class Person implements People {
 
     @Override
     public Person update(Person person) {
-
-
-        return null;
+        String sql = "UPDATE Todo_Item SET first_Name=?,last_Name=?,Where person_id=?";
+        Connection connection = MySql.getConnection();
+        int updateRow;
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1,getPerson_id());
+            preparedStatement.setString(3, person.getFirstName());
+            preparedStatement.setString(3, person.getLastName());
+            updateRow = preparedStatement.executeUpdate();
+            if (updateRow > 0)
+                System.out.println("Update was Success full");
+        } catch (SQLException e) {
+            System.out.println("Data base does not exist");;
+        }
+        return person;
     }
 
     @Override
     public boolean deleteById(int id) {
-        for (Person p : person) {
-            if (p.person_id == id)
-                person.remove(p);
-            return true;
+        String sql="Delete from Person where id=?";
+        int rowDeleted;
+        Connection connection=MySql.getConnection();
+        try {
+            PreparedStatement statement=connection.prepareStatement(sql);
+            statement.setInt(1,id);
+            rowDeleted=statement.executeUpdate();
+            return rowDeleted>0;
+
         }
+        catch (SQLException e) {
+            System.out.println("Data Base does not exist");};
         return false;
     }
 }
