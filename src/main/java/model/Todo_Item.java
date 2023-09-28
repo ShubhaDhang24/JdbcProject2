@@ -145,24 +145,22 @@ public class Todo_Item implements TodoItems {
     }
 
     @Override
-    public Collection<Todo_Item> findByDoneStatus(boolean val)
-    {
-        List<Todo_Item> todoItems=new ArrayList<>();
+    public Collection<Todo_Item> findByDoneStatus(boolean val) {
+        List<Todo_Item> todoItems = new ArrayList<>();
         String sql = "SELECT id, description, done FROM todo_items WHERE done = ?";
-        try{
-            Connection connection=MySql.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setBoolean(1, val);
-        ResultSet resultSet=preparedStatement.executeQuery(sql);
+        try {
+            Connection connection = MySql.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setBoolean(1, val);
+            ResultSet resultSet = preparedStatement.executeQuery(sql);
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String description = resultSet.getString("description");
                 boolean done = resultSet.getBoolean("done");
-                Todo_Item todoItem = new Todo_Item(id,title,description,deadline, done,assignee_id);
+                Todo_Item todoItem = new Todo_Item(id, title, description, deadline, done, assignee_id);
                 todoItems.add(todoItem);
             }
-        }
-        catch (SQLException s){
+        } catch (SQLException s) {
             System.out.println(s.getStackTrace());
         }
         return todoItems;
@@ -171,22 +169,22 @@ public class Todo_Item implements TodoItems {
     @Override
     public Collection<Todo_Item> findByAssignee(Person per) {
         String sql = "SELECT id, description, done FROM todo_items WHERE assignee_id = ?";
-        List<Todo_Item> todoItems=new ArrayList<>();
-        Connection connection=MySql.getConnection();
+        List<Todo_Item> todoItems = new ArrayList<>();
+        Connection connection = MySql.getConnection();
         try {
-            PreparedStatement statement= connection.prepareStatement("sql");
-            ResultSet resultSet= statement.executeQuery();
-            while (resultSet.next())
-            {
+            PreparedStatement statement = connection.prepareStatement("sql");
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String description = resultSet.getString("description");
                 boolean done = resultSet.getBoolean("done");
-                Todo_Item todoItem = new Todo_Item(id,title,description,deadline, done,assignee_id);
+                Todo_Item todoItem = new Todo_Item(id, title, description, deadline, done, assignee_id);
                 todoItems.add(todoItem);
 
             }
         } catch (SQLException e) {
-            System.out.println("Database does not exist");;
+            System.out.println("Database does not exist");
+            ;
         }
 
 
@@ -197,22 +195,22 @@ public class Todo_Item implements TodoItems {
     public Collection<Todo_Item> findByUnassignedTodoItems() {
 
         String sql = "SELECT id, description, done FROM todo_items WHERE assignee_id is NULL";
-        List<Todo_Item> todoItems=new ArrayList<>();
-        Connection connection=MySql.getConnection();
+        List<Todo_Item> todoItems = new ArrayList<>();
+        Connection connection = MySql.getConnection();
         try {
-            PreparedStatement statement= connection.prepareStatement("sql");
-            ResultSet resultSet= statement.executeQuery();
-            while (resultSet.next())
-            {
+            PreparedStatement statement = connection.prepareStatement("sql");
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String description = resultSet.getString("description");
                 boolean done = resultSet.getBoolean("done");
-                Todo_Item todoItem = new Todo_Item(id,title,description,deadline, done,assignee_id);
+                Todo_Item todoItem = new Todo_Item(id, title, description, deadline, done, assignee_id);
                 todoItems.add(todoItem);
 
             }
         } catch (SQLException e) {
-            System.out.println("Database does not exist");;
+            System.out.println("Database does not exist");
+            ;
         }
         return todoItems;
     }
